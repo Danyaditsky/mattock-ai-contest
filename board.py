@@ -1,4 +1,4 @@
-from copy import copy, deepcopy
+from copy import copy
 from enum import Enum
 
 
@@ -80,7 +80,7 @@ class Board:
         out = Board.__new__(Board)
         out.size = self.size
         out.miner_count = self.miner_count
-        out.cells = deepcopy(self.cells)
+        out.cells = copy(self.cells)
         return out
 
     def count_elements(self, element: Space) -> int:
