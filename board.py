@@ -227,7 +227,7 @@ class Board:
             ValueError: The input must be either Space.RED or Space.BLUE
 
         Returns:
-            set[Coordinate]: The coordinates walkable by that player
+            set[Cxoordinate]: The coordinates walkable by that player
         """
         if player not in {Space.BLUE, Space.RED}:
             raise ValueError("The only valid players are Space.RED and Space.BLUE")

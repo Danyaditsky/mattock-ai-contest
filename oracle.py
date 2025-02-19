@@ -1,7 +1,9 @@
 from random import choice
 from board import Board, Space, Coordinate
-
+from copy import copy
 #computer for mattock
+#generator functions  make the return type Interable[thing] and you can like cut ur thing short
+#it has a yield. when it sees a yield it spits out a number, and pauses execution until called again
 class TreeNode:
     def __init__ (self, value):
         self.value = value
@@ -10,7 +12,11 @@ class TreeNode:
     def add_child(self, child):
         self.children.append(child)
 
-
+def insert_node(root, node):
+    if root is None:
+        root = node
+    else:
+        root.add_child(node)
 class oracle:
 
     count = 0
@@ -21,16 +27,18 @@ class oracle:
 
     def mine(self, board: Board, color: Space) -> Coordinate:
         mineable = board.mineable_by_player(color)
-        return choice(tuple(mineable)) 
+        # return choice(tuple(mineable)) 
         #the two prior lines can be ignored this is from the previous randombot
+        for coordinates in mineable:
+            board_copy = copy(board)
+            board_copy[coordinates] = Space.EMPTY
+            # self.oracle_mine(board_copy, color)
+            self.move(board_copy, color)
+
+
 
     def move(self, board: Board, color: Space) -> tuple[Coordinate, Coordinate] | None:
-        pieces = board.find_all(color)
-        start = choice(tuple(pieces))
-        ends = board.walkable_from_coord(start)
-        if len(ends) == 0:
-            return None
-        return start, choice(tuple(ends))
+        ...
         #the six prior lines can be ignored this is from the previous randombot
 
     def minimax(self, board: Board, color: Space):
@@ -45,7 +53,7 @@ class oracle:
         # root.children = [x for x in possible_mines if True] #adding all possible mines into the children list
 
 
-    def oracle_method(self, board: Board, color:Space)->int:
+    def oracle_mine(self, board: Board, color:Space)->int:
         """
         Evaluation function  that hopefully evaluates a position.
         Factors in play:
@@ -58,18 +66,19 @@ class oracle:
 
          
         """
-        opposing_color = Space.BLUE if color == Space.RED else Space.RED
-        possible_mines = board.mineable_by_player(color) #all the possible places in the current board.
-        opponent_possible_mines = board.mineable_by_player(opposing_color)
-        mineability_score = possible_mines-opponent_possible_mines
+        # opposing_color = Space.BLUE if color == Space.RED else Space.RED
+        # possible_mines = board.mineable_by_player(color) #all the possible places in the current board.
+        # opponent_possible_mines = board.mineable_by_player(opposing_color)
+        # mineability_score = possible_mines-opponent_possible_mines
 
 
-        #hopefully this makes some sort of sense but essentially we find all of our miners in any specific position 
-        #and if our miner is dead then it just returns 0 we don't want to kill our miners unless we have to.
-        miners_safe = self.miner_dead(board, color)
-        score = miners_safe*(mineability_score + ...) 
-        return score 
+        # #hopefully this makes some sort of sense but essentially we find all of our miners in any specific position 
+        # #and if our miner is dead then it just returns 0 we don't want to kill our miners unless we have to.
+        # miners_safe = self.miner_dead(board, color)
+        # score = miners_safe*(mineability_score + ...) 
+        # return score 
     
+
     def miner_dead(self, board: Board, color: Space)->int:
         miner_locations = board.find_all(color)
         for miner in miner_locations:
@@ -79,4 +88,9 @@ class oracle:
     
     def are_miners_connected(self, board: Board, color: Space)-> bool:
         ...
+        miners = board.find_all(color)
         
+
+        for miner in miners:
+            stack = [miner]
+            visited = {miner}
